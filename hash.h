@@ -1,11 +1,10 @@
 #include "stdbool.h"
 
-// hash table implementation
-// keys must be strings
+// hash table
+// keys are strings
 // values are void *pointers
 
 // struct representing an entry in the hash table
-// should probably only be used internally
 struct HashEntry {
   char *key;
   void *val;
@@ -13,15 +12,14 @@ struct HashEntry {
 };
 
 // struct representing the hash table
-// the size_index is an index into the hash_sizes
-// array defined in hash.c
+// size_index is an index into the hash_sizes array in hash.c
 struct HashTable {
   size_t size_index;
   size_t entry_count;
   struct HashEntry **entries;
 };
 
-// hash table functions
+// hash table creation and destruction
 struct HashTable *create_hash_table(void);
 void free_hash_table(struct HashTable *hash_table);
 
@@ -31,7 +29,7 @@ void *hash_get(struct HashTable *hash_table, char *key);
 void *hash_delete(struct HashTable *hash_table, char *key);
 bool hash_exists(struct HashTable *hash_table, char *key);
 
-// hash entry functions
+// hash entry creation and destruction
 struct HashEntry *create_entry(char *key, void *val);
 void free_entry(struct HashEntry *entry, bool recursive);
 
