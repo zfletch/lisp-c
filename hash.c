@@ -3,14 +3,15 @@
 #include "stdlib.h"
 #include "./hash.h"
 
+#define COUNT_OF(arr) (sizeof(arr) / sizeof(*arr))
+
 // helper functions
 static size_t next_size_index(size_t size_index);
 static size_t previous_size_index(size_t size_index);
 static struct HashTable *create_hash_table_with_size(size_t size_index);
 
 // possible sizes for hash table; must be prime numbers
-static const size_t max_hash_size_index = 13;
-static const size_t hash_sizes[max_hash_size_index] = {
+static const size_t hash_sizes[] = {
   53,
   101,
   211,
@@ -103,7 +104,7 @@ void *hash_get(struct HashTable *hash_table, char *key)
 void *hash_delete(struct HashTable *hash_table, char *key)
 {
   size_t size, hash;
-  struct HashEntry *entry;
+  struct HashEntry *entry, *deleted_entry;
   void *val;
 
   size = hash_sizes[hash_table->size_index];
@@ -115,8 +116,9 @@ void *hash_delete(struct HashTable *hash_table, char *key)
   } else {
     while (entry) {
       if (entry->next && strcmp(key, entry->next->key) == 0) {
+        deleted_entry = entry->next;
         entry->next = entry->next->next;
-        entry = entry->next;
+        entry = deleted_entry;
         break;
       }
       entry = entry->next;
@@ -129,7 +131,7 @@ void *hash_delete(struct HashTable *hash_table, char *key)
   free_entry(entry, false);
   hash_table->entry_count--;
 
-  if (hash_table->entry_count < size / 4) {
+  if (hash_table->entry_count < size / 8) {
     hash_rehash(hash_table, previous_size_index(hash_table->size_index));
   }
 
@@ -218,7 +220,7 @@ void hash_rehash(struct HashTable *hash_table, size_t size_index)
 
 static size_t next_size_index(size_t size_index)
 {
-  if (size_index == max_hash_size_index) return size_index;
+  if (size_index == COUNT_OF(hash_sizes)) return size_index;
 
   return size_index + 1;
 }
