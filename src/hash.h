@@ -1,4 +1,4 @@
-#include "stdbool.h"
+#include <stdbool.h>
 
 // hash table
 // keys are strings

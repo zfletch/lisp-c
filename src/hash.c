@@ -1,5 +1,5 @@
-#include "string.h"
-#include "stdlib.h"
+#include <string.h>
+#include <stdlib.h>
 #include "./utils.h"
 #include "./hash.h"
 
@@ -143,7 +143,7 @@ struct HashEntry *create_entry(char *key, void *val)
   struct HashEntry *entry;
   char *key_cpy;
 
-  key_cpy = malloc(sizeof(key));
+  key_cpy = malloc((strlen(key) + 1) * sizeof(char));
   entry = malloc(sizeof(struct HashEntry));
 
   strcpy(key_cpy, key);
