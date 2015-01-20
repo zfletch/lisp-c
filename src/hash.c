@@ -1,9 +1,7 @@
-#include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include "./utils.h"
 #include "./hash.h"
-
-#define COUNT_OF(arr) (sizeof(arr) / sizeof(*arr))
 
 // helper functions
 static size_t next_size_index(size_t size_index);
@@ -12,19 +10,8 @@ static struct HashTable *create_hash_table_with_size(size_t size_index);
 
 // possible sizes for hash table; must be prime numbers
 static const size_t hash_sizes[] = {
-  53,
-  101,
-  211,
-  503,
-  1553,
-  3407,
-  6803,
-  12503,
-  25013,
-  50261,
-  104729,
-  250007,
-  500009
+  53, 101, 211, 503, 1553, 3407, 6803, 12503, 25013, 50261,
+  104729, 250007, 500009
 };
 
 struct HashTable *create_hash_table(void)
