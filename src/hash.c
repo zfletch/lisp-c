@@ -176,29 +176,26 @@ size_t generate_hash(struct HashTable *hash_table, char *key)
 
 void hash_rehash(struct HashTable *hash_table, size_t size_index)
 {
-  size_t hash, old_size, ii;
-  struct HashEntry *entry, *new_entry, **entries;
+  size_t hash, size, ii;
+  struct HashEntry *entry, *next_entry, **entries;
 
   if (size_index == hash_table->size_index) return;
 
-  old_size = hash_sizes[hash_table->size_index];
+  size = hash_sizes[hash_table->size_index];
   entries = hash_table->entries;
 
   hash_table->size_index = size_index;
   hash_table->entries = calloc(hash_sizes[size_index], sizeof(void *));
 
-  for (ii = 0; ii < old_size; ii++) {
-    if ((entry = entries[ii])) {
-      while (entry) {
-        new_entry = create_entry(entry->key, entry->val);
-        hash = generate_hash(hash_table, new_entry->key);
-        new_entry->next = hash_table->entries[hash];
-        hash_table->entries[hash] = new_entry;
+  for (ii = 0; ii < size; ii++) {
+    entry = entries[ii];
+    while (entry) {
+      hash = generate_hash(hash_table, entry->key);
+      next_entry = entry->next;
+      entry->next = hash_table->entries[hash];
+      hash_table->entries[hash] = entry;
 
-        new_entry = entry;
-        entry = entry->next;
-        free_entry(new_entry, false);
-      }
+      entry = next_entry;
     }
   }
 
