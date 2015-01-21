@@ -26,6 +26,17 @@ void *scalloc(size_t num, size_t size)
   return result;
 }
 
+void *srealloc(void *ptr, size_t size)
+{
+  void *result;
+
+  result = realloc(ptr, size);
+
+  if (!result) error(strerror(errno));
+
+  return result;
+}
+
 void error(const char *message)
 {
   fprintf(stderr, "%s\n", message);
