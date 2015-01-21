@@ -23,11 +23,11 @@ static struct HashTable *create_hash_table_with_size(size_t size_index)
 {
   struct HashTable *hash_table;
 
-  hash_table = malloc(sizeof(struct HashTable));
+  hash_table = smalloc(sizeof(struct HashTable));
 
   hash_table->size_index = size_index;
   hash_table->entry_count = 0;
-  hash_table->entries = calloc(hash_sizes[size_index], sizeof(void *));
+  hash_table->entries = scalloc(hash_sizes[size_index], sizeof(void *));
 
   return hash_table;
 }
@@ -143,8 +143,8 @@ struct HashEntry *create_entry(char *key, void *val)
   struct HashEntry *entry;
   char *key_cpy;
 
-  key_cpy = malloc((strlen(key) + 1) * sizeof(char));
-  entry = malloc(sizeof(struct HashEntry));
+  key_cpy = smalloc((strlen(key) + 1) * sizeof(char));
+  entry = smalloc(sizeof(struct HashEntry));
 
   strcpy(key_cpy, key);
   entry->key = key_cpy;
@@ -185,7 +185,7 @@ void hash_rehash(struct HashTable *hash_table, size_t size_index)
   entries = hash_table->entries;
 
   hash_table->size_index = size_index;
-  hash_table->entries = calloc(hash_sizes[size_index], sizeof(void *));
+  hash_table->entries = scalloc(hash_sizes[size_index], sizeof(void *));
 
   for (ii = 0; ii < size; ii++) {
     entry = entries[ii];
