@@ -22,4 +22,5 @@ struct Token {
 // token creation and destruction
 struct Token *create_token(enum TokenType type, union TokenVal val);
 void free_token(struct Token *token, bool recursive);
-struct Token *scan(FILE *file);
+struct Token *scan_file(FILE *file);
+struct Token *scan_string(char *str);

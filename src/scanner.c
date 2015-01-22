@@ -4,14 +4,71 @@
 #include "./scanner.h"
 #include "./utils.h"
 
+enum InputType {
+  FILE_TYPE, STRING_TYPE
+};
+
+union InputSource {
+  FILE *file;
+  char *str;
+};
+
+struct Input {
+  enum InputType type;
+  union InputSource source;
+};
+
 // helper functions
+static int next_char(struct Input *input);
+static struct Token *scan(struct Input input);
 static struct Token *open_paren(void);
 static struct Token *close_paren(void);
 static struct Token *symbol(char *str, size_t char_count);
 static struct Token *integer(long int integer);
 static void add_to_str(char **str, size_t *size, char ch, size_t char_count);
 
-struct Token *scan(FILE *file)
+static int next_char(struct Input *input)
+{
+  union InputSource source;
+  char ch;
+
+  switch (input->type) {
+    case FILE_TYPE:
+      return getc(input->source.file);
+    default:
+      ch = *input->source.str;
+      source.str = input->source.str + 1;
+      input->source = source;
+
+      return ch ? (int) ch : EOF;
+  }
+}
+
+struct Token *scan_file(FILE *file)
+{
+  struct Input input;
+  union InputSource source;
+
+  input.type = FILE_TYPE;
+  source.file = file;
+  input.source = source;
+
+  return scan(input);
+}
+
+struct Token *scan_string(char *str)
+{
+  struct Input input;
+  union InputSource source;
+
+  input.type = STRING_TYPE;
+  source.str = str;
+  input.source = source;
+
+  return scan(input);
+}
+
+static struct Token *scan(struct Input input)
 {
   int ch;
   char *str;
@@ -29,7 +86,7 @@ struct Token *scan(FILE *file)
   size = 200;
   str = smalloc(size);
 
-  while ((ch = getc(file)) != EOF) {
+  while ((ch = next_char(&input)) != EOF) {
     switch (state) {
       case WHITESPACE:
         switch (ch) {

@@ -5,16 +5,16 @@
 #include <stdbool.h>
 #include "../src/scanner.h"
 
-int main(int argc, char **argv)
+static void scan_file_test()
 {
   FILE *file = fopen("./scanner_test", "r");
   struct Token *head, *tail;
 
-  head = scan(file);
+  head = scan_file(file);
 
   tail = head;
   assert(tail->type == OPEN_PAREN);
-  
+
   tail = tail->next;
   assert(tail->type == SYMBOL);
   assert(strcmp(tail->val.symbol, "+") == 0);
@@ -46,6 +46,45 @@ int main(int argc, char **argv)
 
   free_token(head, true);
   fclose(file);
+}
+
+static void scan_string_test()
+{
+  struct Token *head, *tail;
+
+  head = scan_string("( (- a 55))");
+
+  tail = head;
+  assert(tail->type == OPEN_PAREN);
+
+  tail = tail->next;
+  assert(tail->type == OPEN_PAREN);
+
+  tail = tail->next;
+  assert(tail->type == SYMBOL);
+  assert(strcmp(tail->val.symbol, "-") == 0);
+
+  tail = tail->next;
+  assert(tail->type == SYMBOL);
+  assert(strcmp(tail->val.symbol, "a") == 0);
+
+  tail = tail->next;
+  assert(tail->type == INTEGER);
+  assert(tail->val.integer == 55);
+
+  tail = tail->next;
+  assert(tail->type == CLOSE_PAREN);
+
+  tail = tail->next;
+  assert(tail->type == CLOSE_PAREN);
+
+  free_token(head, true);
+}
+
+int main(int argc, char **argv)
+{
+  scan_file_test();
+  scan_string_test();
 
   return 0;
 }
