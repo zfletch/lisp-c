@@ -1,3 +1,6 @@
+#ifndef HASH_H
+#define HASH_H
+
 #include <stdbool.h>
 
 // hash table
@@ -36,3 +39,5 @@ void free_entry(struct HashEntry *entry, bool recursive);
 // other functions
 size_t generate_hash(struct HashTable *hash, char *key);
 void hash_rehash(struct HashTable *hash_table, size_t size_index);
+
+#endif

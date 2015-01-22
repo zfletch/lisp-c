@@ -1,26 +1,27 @@
+#ifndef SCANNER_H
+#define SCANNER_H
+
 #include <stdbool.h>
+#include "./input.h"
 
 enum TokenState {
-  WHITESPACE, MIDWORD, NUMBER
+  WHITESPACE, MIDWORD, MIDNUMBER
 };
 
 enum TokenType {
-  OPEN_PAREN, CLOSE_PAREN, SYMBOL, INTEGER
-};
-
-union TokenVal {
-  char *symbol;
-  long int integer;
+  OPEN_PAREN, CLOSE_PAREN, TOKEN_SYMBOL, TOKEN_INTEGER
 };
 
 struct Token {
   enum TokenType type;
-  union TokenVal val;
+  char *val;
   struct Token *next;
 };
 
 // token creation and destruction
-struct Token *create_token(enum TokenType type, union TokenVal val);
+struct Token *create_token(enum TokenType type, char *val);
 void free_token(struct Token *token, bool recursive);
-struct Token *scan_file(FILE *file);
-struct Token *scan_string(char *str);
+
+struct Token *scan(struct Input *input);
+
+#endif
