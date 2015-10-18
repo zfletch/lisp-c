@@ -35,18 +35,20 @@ struct Token *new_token(char *str, size_t len);
 void free_token(struct Token *token);
 struct Token *tokenize (char *string);
 
-// .c file
 int main(int argc, char **argv)
 {
   struct Token *token;
   struct Token *next;
   struct ASTNodeAndToken ast_and_t;
 
-  next = token = tokenize(argv[1]);
-  /* while ((next = next->next)) printf("%s\n", next->str); */
-  ast_and_t = build_ast(token);
+  if (argc == 2) {
+    next = token = tokenize(argv[1]);
+    ast_and_t = build_ast(token);
 
-  printf("%d\n", (int) eval_ast(ast_and_t.node)->val);
+    printf("%d\n", (int) eval_ast(ast_and_t.node)->val);
+  } else {
+    printf("usage: ./calc '(+ 1 1)'\n");
+  }
 
   return 0;
 }
